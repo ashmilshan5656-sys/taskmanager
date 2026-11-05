@@ -1,0 +1,39 @@
+{% extends 'myapp/base.html' %}
+
+{% block content %}
+<h2>Your Tasks</h2>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+    <a href="{% url 'task_create' %}" class="btn">Add Task</a>
+    <a href="{% url 'logout' %}" class="btn secondary">Logout</a>
+</div>
+
+{% if tasks %}
+<table>
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Due Date</th>
+            <th>Priority</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for task in tasks %}
+        <tr>
+            <td>{{ task.title }}</td>
+            <td>{{ task.due_date }}</td>
+            <td>{{ task.priority }}</td>
+            <td>{{ task.status }}</td>
+            <td class="actions">
+                <a href="{% url 'task_edit' task.pk %}">Edit</a>
+                <a href="{% url 'task_delete' task.pk %}">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No tasks yet. Create your first task.</p>
+{% endif %}
+{% endblock %}

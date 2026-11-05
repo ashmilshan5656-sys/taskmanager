@@ -5,23 +5,274 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task Management</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; background: #f4f7fb; color: #1c2430; }
-        .container { max-width: 980px; margin: 40px auto; padding: 20px; }
-        .card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 8px 24px rgba(0,0,0,.08); }
-        nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        nav a { color: #0d6efd; text-decoration: none; margin-left: 12px; }
-        .btn { display: inline-block; padding: 10px 16px; border-radius: 8px; border: none; background: #0d6efd; color: white; text-decoration: none; cursor: pointer; }
-        .btn.secondary { background: #6c757d; }
-        .btn.danger { background: #dc3545; }
-        table { width: 100%; border-collapse: collapse; margin-top: 16px; }
-        th, td { padding: 12px; border-bottom: 1px solid #e9ecef; text-align: left; }
-        th { background: #f8f9fa; }
-        .actions a { margin-right: 10px; }
-        form { display: grid; gap: 12px; }
-        label { font-weight: 600; }
-        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 8px; box-sizing: border-box; }
-        .errorlist { color: #dc3545; list-style: none; padding: 0; margin: 0; }
-        .message { margin-bottom: 16px; padding: 10px 12px; border-radius: 8px; background: #e7f7ed; color: #0f5132; }
+        :root {
+            --bg: #eef4ff;
+            --panel: #ffffff;
+            --panel-alt: #f8faff;
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --secondary-dark: #475569;
+            --danger: #dc2626;
+            --danger-dark: #b91c1c;
+            --text: #0f172a;
+            --muted: #475569;
+            --line: #dfe7f3;
+            --success-bg: #ecfdf5;
+            --success-text: #065f46;
+            --shadow: 0 18px 36px rgba(15, 23, 42, 0.08);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background: linear-gradient(180deg, #eef4ff 0%, #f8fbff 100%);
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 1080px;
+            margin: 48px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: var(--panel);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 18px;
+            padding: 28px;
+            box-shadow: var(--shadow);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 26px;
+            margin-bottom: 22px;
+            background: rgba(255, 255, 255, 0.75);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 14px;
+            backdrop-filter: blur(8px);
+        }
+
+        nav strong {
+            font-size: 1.2rem;
+            letter-spacing: 0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .nav-links a {
+            font-weight: 600;
+            color: var(--muted);
+        }
+
+        .btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px 18px;
+            border-radius: 10px;
+            border: none;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+            box-shadow: 0 10px 18px rgba(37, 99, 235, 0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            text-decoration: none;
+            opacity: 0.98;
+        }
+
+        .btn.secondary {
+            background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
+            box-shadow: 0 10px 18px rgba(71, 85, 105, 0.2);
+        }
+
+        .btn.danger {
+            background: linear-gradient(135deg, var(--danger), var(--danger-dark));
+            box-shadow: 0 10px 18px rgba(220, 38, 38, 0.2);
+        }
+
+        h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: clamp(1.7rem, 2vw, 2.3rem);
+            color: var(--text);
+        }
+
+        form {
+            display: grid;
+            gap: 14px;
+            max-width: 560px;
+        }
+
+        form p {
+            display: grid;
+            gap: 8px;
+            margin: 0;
+        }
+
+        label {
+            font-weight: 700;
+            color: var(--muted);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            background: var(--panel-alt);
+            color: var(--text);
+            font-size: 1rem;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: rgba(37, 99, 235, 0.7);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+            background: #fff;
+        }
+
+        textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .errorlist {
+            color: var(--danger);
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        .message {
+            margin-bottom: 18px;
+            padding: 12px 14px;
+            border-radius: 10px;
+            background: var(--success-bg);
+            color: var(--success-text);
+            border: 1px solid rgba(6, 95, 70, 0.12);
+            font-weight: 600;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin: 18px 0 22px;
+            flex-wrap: wrap;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            margin-top: 12px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 700px;
+        }
+
+        th, td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--line);
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        th {
+            background: #f3f7ff;
+            color: var(--muted);
+            font-size: 0.82rem;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        tbody tr:hover {
+            background: #fbfdff;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            white-space: nowrap;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: #edf2ff;
+            color: #1d4ed8;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+
+        .empty-state {
+            padding: 30px 20px;
+            text-align: center;
+            color: var(--muted);
+            border: 1px dashed var(--line);
+            border-radius: 12px;
+            background: #fafcff;
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                margin: 24px auto;
+                padding: 0 14px;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            nav {
+                padding: 14px 16px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .toolbar {
+                align-items: stretch;
+            }
+
+            .toolbar .btn {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -29,7 +280,7 @@
         {% if user.is_authenticated %}
         <nav>
             <strong>Task Management</strong>
-            <div>
+            <div class="nav-links">
                 <a href="{% url 'task_list' %}">Tasks</a>
                 <a href="{% url 'logout' %}">Logout</a>
             </div>
